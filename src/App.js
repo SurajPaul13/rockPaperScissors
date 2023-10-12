@@ -1,14 +1,8 @@
 import {Component} from 'react'
 import Popup from 'reactjs-popup'
 import {RiCloseLine} from 'react-icons/ri'
-import {
-  ListItem,
-  ScoreElement,
-  Btn,
-  ResultMessage,
-  ChoiceImage,
-} from './styledComponents'
-import ImageButton from './ImageButton'
+import {ListItem, ScoreElement, Btn, ResultMessage} from './styledComponents'
+import Image from './Image'
 import './App.css'
 
 const choicesList = [
@@ -49,15 +43,15 @@ class App extends Component {
           <ListItem className="result-list-item-div">
             <p className="player">YOU</p>
             <Btn type="button">
-              <ChoiceImage src={userSelection.imageUrl} alt="your choice" />
+              <Image imageUrl={userSelection.imageUrl} id="your choice" />
             </Btn>
           </ListItem>
           <ListItem className="result-list-item-div">
             <p className="player">OPPONENT</p>
             <Btn type="button">
-              <ChoiceImage
-                src={computerSelection.imageUrl}
-                alt="opponent choice"
+              <Image
+                imageUrl={computerSelection.imageUrl}
+                id="opponent choice"
               />
             </Btn>
           </ListItem>
@@ -121,15 +115,17 @@ class App extends Component {
   }
 
   renderChoices = choiceDetails => {
+    const {id, imageUrl, testId} = choiceDetails
     const onClickChoice = () => {
       this.startGame(choiceDetails)
     }
 
     return (
-      <ImageButton
-        choiceDetails={choiceDetails}
-        onClickChoice={onClickChoice}
-      />
+      <ListItem key={id}>
+        <Btn type="button" data-testid={testId} onClick={onClickChoice}>
+          <Image imageUrl={imageUrl} id={id} />
+        </Btn>
+      </ListItem>
     )
   }
 
