@@ -8,6 +8,7 @@ import {
   ResultMessage,
   ChoiceImage,
 } from './styledComponents'
+import ImageButton from './ImageButton'
 import './App.css'
 
 const choicesList = [
@@ -120,18 +121,15 @@ class App extends Component {
   }
 
   renderChoices = choiceDetails => {
-    const {id, imageUrl, testId} = choiceDetails
-
     const onClickChoice = () => {
       this.startGame(choiceDetails)
     }
 
     return (
-      <ListItem key={id}>
-        <Btn type="button" data-testid={testId} onClick={onClickChoice}>
-          <ChoiceImage src={imageUrl} alt={id} />
-        </Btn>
-      </ListItem>
+      <ImageButton
+        choiceDetails={choiceDetails}
+        onClickChoice={onClickChoice}
+      />
     )
   }
 
