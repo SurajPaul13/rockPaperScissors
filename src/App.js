@@ -1,8 +1,14 @@
 import {Component} from 'react'
 import Popup from 'reactjs-popup'
 import {RiCloseLine} from 'react-icons/ri'
-import {ListItem, ScoreElement, Btn, ResultMessage} from './styledComponents'
-import Image from './Image'
+import {
+  ListItem,
+  ScoreElement,
+  Btn,
+  ResultMessage,
+  ChoiceImage,
+} from './styledComponents'
+import ButtonImage from './ButtonImage'
 import './App.css'
 
 const choicesList = [
@@ -30,28 +36,36 @@ class App extends Component {
   state = {
     score: 0,
     showResults: false,
-    userSelection: '',
+    userChoice: '',
     computerSelection: '',
     resultMessage: '',
   }
 
   resultCard = () => {
-    const {userSelection, computerSelection, resultMessage} = this.state
+    const {userChoice, computerSelection, resultMessage} = this.state
+
+    const userSelection = choicesList.filter(each => each.id === userChoice)[0]
+
     return (
       <div className="result-card">
         <ul className="game-card">
           <ListItem className="result-list-item-div">
             <p className="player">YOU</p>
             <Btn type="button">
-              <Image imageUrl={userSelection.imageUrl} id="your choice" />
+              <ChoiceImage
+                src={userSelection.imageUrl}
+                id="your choice"
+                alt="your choice"
+              />
             </Btn>
           </ListItem>
           <ListItem className="result-list-item-div">
             <p className="player">OPPONENT</p>
             <Btn type="button">
-              <Image
-                imageUrl={computerSelection.imageUrl}
+              <ChoiceImage
+                src={computerSelection.imageUrl}
                 id="opponent choice"
+                alt="opponent choice"
               />
             </Btn>
           </ListItem>
@@ -68,9 +82,7 @@ class App extends Component {
     )
   }
 
-  startGame = userSelection => {
-    const userChoice = userSelection.id
-
+  startGame = userChoice => {
     const generatedIndex = Math.floor(Math.random() * 3)
     const computerSelection = choicesList[generatedIndex]
     const computerChoice = computerSelection.id
@@ -80,7 +92,7 @@ class App extends Component {
     if (userChoice === computerChoice) {
       resultMessage = 'IT IS DRAW'
       this.setState({
-        userSelection,
+        userChoice,
         computerSelection,
         resultMessage,
         showResults: true,
@@ -93,7 +105,7 @@ class App extends Component {
       resultMessage = 'YOU WON'
       this.setState(prevState => ({
         score: prevState.score + 1,
-        userSelection,
+        userChoice,
         computerSelection,
         resultMessage,
         showResults: true,
@@ -102,7 +114,7 @@ class App extends Component {
       resultMessage = 'YOU LOSE'
       this.setState(prevState => ({
         score: Math.max(prevState.score - 1),
-        userSelection,
+        userChoice,
         computerSelection,
         resultMessage,
         showResults: true,
@@ -114,17 +126,19 @@ class App extends Component {
     this.setState({showResults: false})
   }
 
+  onClickChoice = userChoice => {
+    this.startGame(userChoice)
+  }
+
   renderChoices = choiceDetails => {
-    const {id, imageUrl, testId} = choiceDetails
-    const onClickChoice = () => {
-      this.startGame(choiceDetails)
-    }
+    const {id} = choiceDetails
 
     return (
       <ListItem key={id}>
-        <Btn type="button" data-testid={testId} onClick={onClickChoice}>
-          <Image imageUrl={imageUrl} id={id} />
-        </Btn>
+        <ButtonImage
+          choiceDetails={choiceDetails}
+          onClickChoice={this.onClickChoice}
+        />
       </ListItem>
     )
   }
